@@ -1,0 +1,13 @@
+<h1>Proteínas Cadastradas</h1>
+<ul>
+  {% for design in designs %}
+    <li>
+      <a href="{% url 'design_detail' design.id_design %}">
+        {{ design.design_name }} ({{ design.organism }})
+      </a>
+    </li>
+  {% empty %}
+    <li>Nenhuma proteína cadastrada.</li>
+  {% endfor %}
+</ul>
+

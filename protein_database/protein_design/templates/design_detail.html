@@ -1,0 +1,109 @@
+{% block content %}
+<div class="container mt-4">
+  <h1>Detalhes do Design: {{ design.design_name }}</h1>
+
+  <div class="card mt-3">
+    <div class="card-body">
+
+      <!-- Informações do Design -->
+      <h5 class="card-title">PDB ID:</h5>
+      <p class="card-text">{{ design.pdb_id|default:"Não informado" }}</p>
+
+      <h5 class="card-title">Organismo:</h5>
+      <p class="card-text">{{ design.organism|default:"Não informado" }}</p>
+
+      <!-- Sequências associadas -->
+      <h4 class="mt-4">Sequências</h4>
+      {% with design.sequence_set.all as sequences %}
+        {% if sequences %}
+          <ul class="list-group mt-2">
+            {% for seq in sequences %}
+              <li class="list-group-item">
+                <strong>Cadeia:</strong> {{ seq.chain_id|default:"Sem identificação" }}<br>
+                <strong>Sequência:</strong> {{ seq.sequence|default:"N/A" }}<br>
+                <strong>Tamanho:</strong> {{ seq.length|default:"N/A" }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="mt-2">Nenhuma sequência registrada para este design.</p>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Ensaios associados -->
+      <h4 class="mt-4">Ensaios relacionados</h4>
+      {% if assays %}
+        <ul class="list-group mt-2">
+          {% for assay in assays %}
+            <li class="list-group-item">
+              <strong>{{ assay.assay_name|default:"Sem nome" }}</strong><br>
+              Técnica: {{ assay.fk_id_techniques.technique_name }} ({{ assay.fk_id_techniques.technique_type }})<br>
+              Categoria: {{ assay.fk_id_category.category_name }}<br>
+              Protocolo: {{ assay.fk_id_protocol.protocol_name }}<br>
+              Validação:
+              {% if assay.success_validation %}
+                ✅ Validado
+              {% else %}
+                ❌ Não validado
+              {% endif %}
+
+              <!-- Propriedades Específicas dessa Categoria -->
+              <h6 class="mt-2">Propriedades Específicas:</h6>
+              {% with assay.fk_id_category.specificproperty_set.all as properties %}
+                {% if properties %}
+                  <ul>
+                    {% for prop in properties %}
+                      <li>{{ prop.sp_name }}</li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p>Nenhuma propriedade específica registrada.</p>
+                {% endif %}
+              {% endwith %}
+
+              <!-- Resultados Computacionais -->
+              <h6 class="mt-3">Resultados Computacionais:</h6>
+              {% with assay.fk_id_techniques.computationalresult_set.all as comp_results %}
+                {% if comp_results %}
+                  <ul>
+                    {% for result in comp_results %}
+                      {% if result.fk_id_design == design %}
+                        <li>Valor: {{ result.result_value|default:"N/A" }}</li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p>Nenhum resultado computacional registrado.</p>
+                {% endif %}
+              {% endwith %}
+
+              <!-- Resultados Experimentais -->
+              <h6 class="mt-3">Resultados Experimentais:</h6>
+              {% with assay.fk_id_techniques.experimentalresult_set.all as exp_results %}
+                {% if exp_results %}
+                  <ul>
+                    {% for result in exp_results %}
+                      {% if result.fk_id_design == design %}
+                        <li>Valor: {{ result.result_value|default:"N/A" }}</li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p>Nenhum resultado experimental registrado.</p>
+                {% endif %}
+              {% endwith %}
+
+              
+
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="mt-2">Nenhum ensaio registrado para este design.</p>
+      {% endif %}
+
+      <a href="{% url 'design_search' %}" class="btn btn-secondary mt-4">Voltar</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

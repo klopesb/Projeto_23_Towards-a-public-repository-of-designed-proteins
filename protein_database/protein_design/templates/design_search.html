@@ -1,0 +1,81 @@
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Busca de Ensaios</h2>
+
+  <form method="get" class="mb-4">
+    <div class="row">
+      <!-- Busca global pelo nome do ensaio -->
+      <div class="col-md-4 mb-3">
+        <label for="id_global_search">Search</label>
+        <input type="text" name="global_search" id="id_aglobal_search" class="form-control" value="{{ request.GET.global_search }}">
+      </div>
+
+      <!-- Filtro por Categoria -->
+      <div class="col-md-3 mb-3">
+            <label for="id_fk_id_category">Categoria</label>
+            {{ filter.form.fk_id_category }}
+      </div>
+
+      <!-- Filtro por sp -->
+        <div class="col-md-3 mb-3">
+            <label for="fk_id_category__id_sp">Specific Property</label>
+            {{ filter.form.sp }}
+        </div>
+
+      <!-- Filtro por Design
+      <div class="col-md-3 mb-3">
+        <label for="id_fk_id_design">Design</label>
+        {{ filter.form.fk_id_design }}
+      </div> -->
+
+      <!-- Tipo por Design -->
+      <div class="col-md-3 mb-3">
+            <label for="id_design_type">Design Type</label>
+            {{ filter.form.design_type}}
+      </div>
+
+      <!-- Filtro por Técnica -->
+        <div class="col-md-3 mb-3">
+            <label for="id_fk_id_techniques">Técnica</label>
+            {{ filter.form.fk_id_techniques }}
+        </div>
+    
+
+        <!-- Tipo por Técnica -->
+        <div class="col-md-4 mb-3">
+            <label for="id_technique_type">Tipo de Técnica</label>
+            {{ filter.form.technique_type }}
+        </div>
+        
+        <!-- Assay Validation -->
+        <div class="col-md-4 mb-3">
+            <label for="success_validation">Validation</label>
+            {{ filter.form.success_validation}}
+        </div>
+    
+    </div>
+
+
+
+
+
+
+    <button type="submit" class="btn btn-primary">Buscar</button>
+  </form>
+
+  <hr>
+
+  <h4>Resultados:</h4>
+
+  {% if filter.qs %}
+    <ul class="list-group mt-3">
+      {% for assay in filter.qs %}
+        <li class="list-group-item">
+          <a href="{% url 'design_detail' assay.fk_id_design.id_design %}" class="btn btn-primary btn-sm float-end"><td>{{ assay.fk_id_design.design_name }}</td></a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="mt-3">Nenhum ensaio encontrado.</p>
+  {% endif %}
+{% endblock %}

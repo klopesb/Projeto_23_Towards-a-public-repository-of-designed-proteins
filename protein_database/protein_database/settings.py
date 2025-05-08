@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'protein_design'
+    'protein_design',
+    'import_export',
+    'django_filters',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [

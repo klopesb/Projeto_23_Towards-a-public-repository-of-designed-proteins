@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<head>
+    <title>Inserir Assay</title>
+</head>
+<body>
+    <h1>Inserir Assay e Dados Relacionados</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Protocol</h3>
+        {{ protocol_form.as_p }}
+
+        <h3>Design</h3>
+        {{ design_form.as_p }}
+
+        <h3>Sequence</h3>
+        {{ sequence_form.as_p }}
+
+        <h3>Category</h3>
+        {{ category_form.as_p }}
+
+
+        <h3>Specific Property</h3>
+        {{ sp_form.as_p }}
+
+        <h3>Unit</h3>
+        {{ unit_form.as_p }}
+
+        <h3>Assay</h3>
+        {{ assay_form.as_p }}
+
+        <h3>Used Techniques</h3>
+        {{ technique_formset.management_form }}
+        {% for form in technique_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+
+        <button type="submit">Inserir Resultados</button>
+    </form>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+              tags:true,
+                placeholder: "Selecione uma opção",
+                allowClear: true
+            });
+        });
+    </script>
+
+</body>
+</html>

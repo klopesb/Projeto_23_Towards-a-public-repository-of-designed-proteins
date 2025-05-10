@@ -19,13 +19,13 @@ from django.http import HttpResponse
 #Fazer uma lista com as proteinas e puxar a imagem do pdb (se der certo)
 def design_list(request):
     designs = Design.objects.all()
-    return render(request, 'design_list.html', {'designs': designs})
+    return render(request, 'templates/protein_design/design_list.html', {'designs': designs})
 
 #Página de buscas  - /design_search
 def design_search(request):
     assay_list = Assay.objects.all()
     assay_filter = AssayFilter(request.GET, queryset=assay_list)
-    return render(request, 'design_search.html', {'filter': assay_filter})
+    return render(request, 'templates/protein_design/design_search.html', {'filter': assay_filter})
 
 
 #pagina de detalhes do design - /design/<int:id_design>
@@ -56,7 +56,7 @@ def design_detail(request, id_design):
         'fk_id_techniques__experimentalresult_set'
     )
 
-    return render(request, 'design_detail.html', {
+    return render(request, 'templates/protein_design/design_detail.html', {
         'design': design,
         'assays': assays,
     })
@@ -146,7 +146,7 @@ def insert_assay(request):
         'technique_formset': technique_formset,
     }
 
-    return render(request, 'insert_assay.html', context)
+    return render(request, 'templates/protein_design/insert_assay.html', context)
 
 def upload_results(request, design_id, technique_id):
     if request.method == 'POST':
@@ -184,5 +184,5 @@ def upload_results(request, design_id, technique_id):
     else:
         form = ResultsForm()
 
-    return render(request, 'upload_results.html', {'form': form})
+    return render(request, 'templates/protein_design/upload_results.html', {'form': form})
 

@@ -1,4 +1,8 @@
-{% block content %}
+{% load static tailwind_tags %}
+
+<head>
+  <title>Detalhes do Design</title>
+  {% tailwind_css %}
 <div class="container mt-4">
   <h1>Detalhes do Design: {{ design.design_name }}</h1>
 
@@ -123,4 +127,3 @@
     </div>
   </div>
 </div>
-{% endblock %}

@@ -11,16 +11,33 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Ensure the .env file is loaded correctly
+#load_dotenv(os.path.join(BASE_DIR, 'pass.env'))
+
+#Load environment variables from .env file
+#load_dotenv()
+
+#Initializing environment variables
+env = environ.Env()
+environ.Env.read_env() #Read .env file, if it exists
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*4p4nsl29u4sdfycs&42rn+3=27m_gf)4+y1_mk5#avyd-br-='
+# Provide a default value for SECRET_KEY if the environment variable is not set
+
+SECRET_KEY = env('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,15 +95,15 @@ WSGI_APPLICATION = 'protein_database.wsgi.application'
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "protein_database",
-        "USER": "root",
-        "PASSWORD": "Borutinh@123",
-        "HOST": "localhost",
-        "PORT": "3306",
-    }
-}
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
+    }}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

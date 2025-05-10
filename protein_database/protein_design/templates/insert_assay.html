@@ -10,6 +10,7 @@
     <title>Inserir Assay</title>
 </head>
 <body>
+    <a href="{% url 'design_search' %}" class="btn btn-secondary mt-4">Voltar</a>
     <h1>Inserir Assay e Dados Relacionados</h1>
     <form method="post">
         {% csrf_token %}

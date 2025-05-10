@@ -26,9 +26,3 @@ Interim Paper: This file contains the interim paper for **Phase 1**, which inclu
 Conceptual Model: This file includes the conceptual model of the project, developed using MySQL Workbench. It outlines the database structure, relationships, and key components needed for the next stages of the project.
 
 
-#### Clone the Repository
-
-To clone the repository, use the following command:
-
-```bash
-git clone < https://github.com/klopesb/Projeto_23_Towards-a-public-repository-of-designed-proteins.git >

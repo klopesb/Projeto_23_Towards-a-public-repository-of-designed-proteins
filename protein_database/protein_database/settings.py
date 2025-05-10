@@ -88,23 +88,6 @@ DATABASES = {
     }
 }
 
-#DATABASES = {
-#    'default': {
-#        'NAME': 'protein_database',
-#        'ENGINE': 'mysql.connector.django',
-#        'HOST': '127.0.0.1',
-#        'PORT': 3306,
-#        'USER': 'root',
-#        'PASSWORD': 'Borutinh@123',
-#        'OPTIONS': {
-#          'autocommit': True,
-#          'use_oure': True,
-#          'init_command': "SET foo='bar';"
-#        },
-#    }
-#}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

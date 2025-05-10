@@ -4,6 +4,7 @@ import csv
 import pandas as pd
 from django.forms import modelformset_factory
 from .filters import AssayFilter
+from django.db.models import Prefetch
 
 # Create your views here.
 #from django.http import HttpResponse
@@ -31,18 +32,35 @@ def design_search(request):
 
 def design_detail(request, id_design):
     design = get_object_or_404(Design, id_design=id_design)
-    assays = design.assay_set.all()
-    units_by_assay = {
-        assay.id_assays: UnitHasSpecificProperty.objects.filter(
-            fk_id_sp__fk_id_category=assay.fk_id_category
-        )
-        for assay in assays
-    }
+
+    # Prefetch unidades relacionadas às propriedades específicas da categoria de cada ensaio
+    unit_prefetch = Prefetch(
+        'unithasspecificproperty_set',
+        queryset=UnitHasSpecificProperty.objects.select_related('fk_id_unit')
+    )
+
+    # Prefetch propriedades específicas da categoria, já com suas unidades associadas
+    property_prefetch = Prefetch(
+        'fk_id_category__specificproperty_set',
+        queryset=SpecificProperty.objects.prefetch_related(unit_prefetch)
+    )
+
+    # Ensaios relacionados ao design com otimizações de acesso
+    assays = design.assay_set.select_related(
+        'fk_id_category',
+        'fk_id_protocol',
+        'fk_id_techniques'
+    ).prefetch_related(
+        property_prefetch,
+        'fk_id_techniques__computationalresult_set',
+        'fk_id_techniques__experimentalresult_set'
+    )
+
     return render(request, 'design_detail.html', {
         'design': design,
         'assays': assays,
-        'units_by_assay': units_by_assay,
     })
+
 
 
 #adiconar proteina na bd - /add_protein

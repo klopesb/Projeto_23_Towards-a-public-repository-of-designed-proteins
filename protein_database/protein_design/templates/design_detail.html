@@ -12,6 +12,9 @@
       <h5 class="card-title">Organismo:</h5>
       <p class="card-text">{{ design.organism|default:"Não informado" }}</p>
 
+      <h5 class="card-title">Design Type:</h5>
+      <p class="card-text">{{ design.design_type|default:"Não informado" }}</p>
+
       <!-- Sequências associadas -->
       <h4 class="mt-4">Sequências</h4>
       {% with design.sequence_set.all as sequences %}
@@ -53,7 +56,21 @@
                 {% if properties %}
                   <ul>
                     {% for prop in properties %}
-                      <li>{{ prop.sp_name }}</li>
+                      <li>
+                        <strong>{{ prop.sp_name }}</strong>
+                        <!-- Unidades associadas -->
+                        {% with prop.unithasspecificproperty_set.all as unit_links %}
+                          {% if unit_links %}
+                            <ul>
+                              {% for link in unit_links %}
+                                <li>Unidade: {{ link.fk_id_unit.unit_name|default:"N/A" }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <p class="text-muted">Nenhuma unidade associada.</p>
+                          {% endif %}
+                        {% endwith %}
+                      </li>
                     {% endfor %}
                   </ul>
                 {% else %}

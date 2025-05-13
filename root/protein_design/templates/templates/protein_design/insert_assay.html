@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
     
@@ -12,50 +11,41 @@
     
 </head>
 <body>
+{% block content %}
     <a href="{% url 'design_search' %}" class="btn btn-secondary mt-4">Voltar</a>
     <h1>Inserir Assay e Dados Relacionados</h1>
-    <form method="post">
-        {% csrf_token %}
 
-        <h3>Protocol</h3>
-        {{ protocol_form.as_p }}
+  <form method="post">
+    {% csrf_token %}
 
-        <h3>Design</h3>
-        {{ design_form.as_p }}
+    <h3>Protocol</h3>
+    {{ protocol_form.as_p }}
 
-        <h3>Sequence</h3>
-        {{ sequence_form.as_p }}
+    <h3>Design</h3>
+    {{ design_form.as_p }}
 
-        <h3>Category</h3>
-        {{ category_form.as_p }}
+    <h3>Category</h3>
+    {{ category_form.as_p }}
 
+    <h3>Specific Property</h3>
+    {{ sp_form.as_p }}
 
-        <h3>Specific Property</h3>
-        {{ sp_form.as_p }}
+    <h3>Unit</h3>
+    {{ unit_form.as_p }}
 
-        <h3>Unit</h3>
-        {{ unit_form.as_p }}
+    <h3>Dados CSV (assay_name, sequence, technique_name, result_value, result_type)</h3>
+    {{ bulk_data_form.as_p }}
 
-        <h3>Assay</h3>
-        {{ assay_form.as_p }}
+    <button type="submit">Salvar</button>
+  </form>
 
-        <h3>Used Techniques</h3>
-        {{ technique_formset.management_form }}
-        {% for form in technique_formset %}
-            {{ form.as_p }}
-        {% endfor %}
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error|linebreaksbr }}
+        </div>
+    {% endif %}
 
-        <button type="submit">Inserir Resultados</button>
-    </form>
-    <script>
-        $(document).ready(function() {
-            $('.select2').select2({
-              tags:true,
-                placeholder: "Selecione uma opção",
-                allowClear: true
-            });
-        });
-    </script>
+{% endblock %}
 
 </body>
 </html>

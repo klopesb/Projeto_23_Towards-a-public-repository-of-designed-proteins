@@ -133,6 +133,9 @@ class Unit(models.Model):
     id_unit = models.AutoField(primary_key=True)
     unit_name = models.CharField(max_length=20, null=True, blank=True)
 
+    def __str__(self):
+        return self.unit_name or f"Unit {self.id_unit}"
+
     class Meta:
         db_table = 'unit'
 

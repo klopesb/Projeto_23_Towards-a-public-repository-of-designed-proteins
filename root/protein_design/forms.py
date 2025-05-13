@@ -15,9 +15,9 @@ class DesignForm(forms.ModelForm):
         fields = ['design_name', 'pdb_id', 'organism', 'design_type', 'ref_link']
 
 class SequenceForm(forms.ModelForm):
-    class Meta:
-        model = Sequence
-        fields = ['sequence', 'chain_id', 'length']
+     class Meta:
+         model = Sequence
+         fields = ['sequence', 'chain_id', 'length']
 
 class CategoryForm(forms.ModelForm):
     category_name = forms.ModelChoiceField(
@@ -32,12 +32,24 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['category_name']
 
-class SpecificPropertyForm(forms.ModelForm):
+class SpecificPropertyForm(forms.ModelForm):  #add dropdown in the form
+    sp_name = forms.ModelChoiceField(
+        queryset=SpecificProperty.objects.all(), 
+        widget=forms.Select(attrs={'class': 'form-control select2'}),
+        empty_label="Select a specific property", 
+        required=True
+    )
     class Meta:
         model = SpecificProperty
         fields = ['sp_name']
 
 class UnitForm(forms.ModelForm):
+    unit_name = forms.ModelChoiceField(
+        queryset=Unit.objects.all(), 
+        widget=forms.Select(attrs={'class': 'form-control select2'}),
+        empty_label="Select a unit", 
+        required=True
+    )
     class Meta:
         model = Unit
         fields = ['unit_name']
@@ -55,9 +67,29 @@ UsedTechniqueFormSet = modelformset_factory(
 class AssayForm(forms.ModelForm):
     class Meta:
         model = Assay
-        fields = ['assay_name', 'success_validation']
+        fields = ['assay_name', 'success_validation'] #assay_name is going to txt area
+    
+AssayFormSet = modelformset_factory(
+Assay, form=AssayForm, extra=1, can_delete=True)
 
-class ResultsForm(forms.Form):
+#class ResultsForm(forms.Form):
     #design = forms.ModelChoiceField(queryset=Design.objects.all()) #UsedTechniqueForm #forms.ModelChoiceField(queryset=Design.objects.all())
     #technique = forms.ModelChoiceField(queryset=UsedTechnique.objects.all()) #DesignForm 
-    csv_file = forms.FileField()
+#    csv_file = forms.FileField()
+
+class BulkDataForm(forms.Form):
+    bulk_data = forms.CharField(widget=forms.Textarea, label="Dados CSV (sequence, technique_name, result_value, result_type)")
+
+
+class ResultsForm(forms.Form):
+    csv_data = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 10, 'cols': 50}),
+        label="Cole os dados do CSV aqui"
+    )
+
+    def clean_csv_data(self):
+        data = self.cleaned_data['csv_data']
+        if not data.strip():
+            raise forms.ValidationError("Você deve colar dados CSV.")
+        return data
+

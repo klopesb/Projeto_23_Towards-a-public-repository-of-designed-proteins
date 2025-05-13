@@ -16,5 +16,11 @@ urlpatterns = [
     path('upload_results/<int:design_id>/<int:technique_id>/', views.upload_results, name='upload_results'),
 
 
+   #path('test/', views.test, name='test'),
+
+
 ]
+
+
+
 

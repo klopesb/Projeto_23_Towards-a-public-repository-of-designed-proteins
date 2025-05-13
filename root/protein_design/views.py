@@ -5,7 +5,7 @@ import pandas as pd
 from django.forms import modelformset_factory
 from .filters import AssayFilter
 from django.db.models import Prefetch
-
+from .validators import *
 # Create your views here.
 #from django.http import HttpResponse
 
@@ -62,34 +62,20 @@ def design_detail(request, id_design):
     })
 
 
-
-#adiconar proteina na bd - /add_protein
-#def add_protein(request):
-#    pass
-
 def insert_assay(request):
-    #UsedTechniqueFormSet = modelformset_factory(UsedTechnique, form=UsedTechniqueForm, extra=2, can_delete=False)
-
     if request.method == 'POST':
         protocol_form = ProtocolForm(request.POST)
         design_form = DesignForm(request.POST)
-        sequence_form = SequenceForm(request.POST)
         category_form = CategoryForm(request.POST)
         sp_form = SpecificPropertyForm(request.POST)
         unit_form = UnitForm(request.POST)
-        assay_form = AssayForm(request.POST)
-        technique_formset = UsedTechniqueFormSet(request.POST, prefix='technique')
+        bulk_data_form = BulkDataForm(request.POST)
 
-        if (protocol_form.is_valid() and design_form.is_valid() and sequence_form.is_valid()
-                and category_form.is_valid() and sp_form.is_valid() and unit_form.is_valid()
-                and assay_form.is_valid() and technique_formset.is_valid()):
+        if (protocol_form.is_valid() and design_form.is_valid() 
+                and category_form.is_valid() and sp_form.is_valid() and unit_form.is_valid() and bulk_data_form.is_valid()):
 
-            # salva cada item e guarda as referências para os FKs
             protocol = protocol_form.save()
-            design = design_form.save()
-            sequence = sequence_form.save(commit=False)
-            sequence.fk_id_design = design
-            sequence.save()
+            design = design_form.save() 
 
             category = category_form.save()
 
@@ -98,32 +84,63 @@ def insert_assay(request):
             sp.save()
 
             unit = unit_form.save()
+            UnitHasSpecificProperty.objects.create(fk_id_unit=unit, fk_id_sp=sp)
 
-            # relation UnitHasSpecificProperty
-            UnitHasSpecificProperty.objects.create(
-                fk_id_unit=unit,
-                fk_id_sp=sp
-            )
+            bulk_text = bulk_data_form.cleaned_data['bulk_data']
 
-            techniques = []
-            for form in technique_formset:
-                technique = form.save(commit=False)
-                technique.fk_id_design = design
-                technique.save()
-                techniques.append(technique)
+            try:
+                data_lines = validate_and_parse_bulk_data(bulk_text)
+            except ValidationError as e:
+                return render(request, 'templates/protein_design/insert_assay.html', {
+                    'protocol_form': protocol_form,
+                    'design_form': design_form,
+                    'category_form': category_form,
+                    'sp_form': sp_form,
+                    'unit_form': unit_form,
+                    'bulk_data_form': bulk_data_form,
+                    'error': str(e)
+                })
 
-            # Assay — assumindo que só haverá uma técnica selecionada no formset para o Assay
-            # se quiser que associe todas as técnicas, pode fazer um loop aqui
-            if techniques:
-                assay = assay_form.save(commit=False)
-                assay.fk_id_protocol = protocol
-                assay.fk_id_category = category
-                assay.fk_id_design = design
-                assay.fk_id_techniques = techniques[0]
-                assay.save()
+            techniques = {}
+            first_technique = None
 
-            #return redirect('design_list')  # ou outra página de sucesso
-            return redirect('upload_results', design_id=design.id_design, technique_id=technique.id_techniques)
+            for i, (assay_name, sequence, technique_name, result_value, result_type) in enumerate(data_lines):
+                if technique_name not in techniques:
+                    technique, _ = UsedTechnique.objects.get_or_create(technique_name=technique_name, fk_id_design=design)
+                    techniques[technique_name] = technique
+
+                    if i == 0:
+                        first_technique = technique
+                else:
+                    technique = techniques[technique_name]
+
+                assay = Assay.objects.create(
+                    assay_name=assay_name,
+                    fk_id_protocol=protocol,
+                    fk_id_category=category,
+                    fk_id_design=design,
+                    fk_id_techniques=technique
+                )
+
+                Sequence.objects.create(
+                    sequence=sequence,
+                    fk_id_design=design
+                )
+
+                if result_type.lower() == 'computational':
+                    ComputationalResult.objects.create(
+                        result_value=result_value,
+                        fk_id_design=design,
+                        fk_id_techniques=technique
+                    )
+                elif result_type.lower() == 'experimental':
+                    ExperimentalResult.objects.create(
+                        result_value=result_value,
+                        fk_id_design=design,
+                        fk_id_techniques=technique
+                    )
+
+            return redirect('design_list')
 
     else:
         protocol_form = ProtocolForm()
@@ -133,7 +150,7 @@ def insert_assay(request):
         sp_form = SpecificPropertyForm()
         unit_form = UnitForm()
         assay_form = AssayForm()
-        technique_formset = UsedTechniqueFormSet(queryset=UsedTechnique.objects.none(), prefix='technique')
+        bulk_data_form = BulkDataForm()
 
     context = {
         'protocol_form': protocol_form,
@@ -143,46 +160,10 @@ def insert_assay(request):
         'sp_form': sp_form,
         'unit_form': unit_form,
         'assay_form': assay_form,
-        'technique_formset': technique_formset,
+        'bulk_data_form': bulk_data_form,
     }
 
     return render(request, 'templates/protein_design/insert_assay.html', context)
 
 def upload_results(request, design_id, technique_id):
-    if request.method == 'POST':
-        form = ResultsForm(request.POST, request.FILES)
-        if form.is_valid():
-            csv_file = request.FILES['csv_file']
-
-            if not csv_file.name.endswith('.csv'):
-                return render(request, "upload_results.html", {'form': form, 'error': 'Ficheiro inválido'})
-
-            df = pd.read_csv(csv_file, sep=';', encoding='utf-8', header=0)
-
-            expected_columns = ["result_type", "result_value"]
-            if not all(col in df.columns for col in expected_columns):
-                missing = [col for col in expected_columns if col not in df.columns]
-                return render(request, 'upload_results.html', {'form': form, 'error': f'Colunas inválidas: {missing}'})
-
-            for _, row in df.iterrows():
-                if row['result_type'].lower() == 'computational':
-                    ComputationalResult.objects.create(
-                        fk_id_techniques_id=technique_id,
-                        fk_id_design_id=design_id,
-                        result_value=row['result_value']
-                    )
-                elif row['result_type'].lower() == 'experimental':
-                    ExperimentalResult.objects.create(
-                        fk_id_techniques_id=technique_id,
-                        fk_id_design_id=design_id,
-                        result_value=row['result_value']
-                    )
-                else:
-                    continue
-
-            return redirect('design_list')  # ou outra página de sucesso
-    else:
-        form = ResultsForm()
-
-    return render(request, 'templates/protein_design/upload_results.html', {'form': form})
-
+    return HttpResponse(f"Upload results para design {design_id}, técnica {technique_id}")

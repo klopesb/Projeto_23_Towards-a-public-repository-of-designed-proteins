@@ -6,6 +6,7 @@ from django.forms import modelformset_factory
 from .filters import AssayFilter
 from django.db.models import Prefetch
 from .validators import *
+import re
 # Create your views here.
 #from django.http import HttpResponse
 
@@ -66,25 +67,11 @@ def insert_assay(request):
     if request.method == 'POST':
         protocol_form = ProtocolForm(request.POST)
         design_form = DesignForm(request.POST)
-        category_form = CategoryForm(request.POST)
-        sp_form = SpecificPropertyForm(request.POST)
-        unit_form = UnitForm(request.POST)
         bulk_data_form = BulkDataForm(request.POST)
 
-        if (protocol_form.is_valid() and design_form.is_valid() 
-                and category_form.is_valid() and sp_form.is_valid() and unit_form.is_valid() and bulk_data_form.is_valid()):
-
+        if protocol_form.is_valid() and design_form.is_valid() and bulk_data_form.is_valid():
             protocol = protocol_form.save()
-            design = design_form.save() 
-
-            category = category_form.save()
-
-            sp = sp_form.save(commit=False)
-            sp.fk_id_category = category
-            sp.save()
-
-            unit = unit_form.save()
-            UnitHasSpecificProperty.objects.create(fk_id_unit=unit, fk_id_sp=sp)
+            design = design_form.save()
 
             bulk_text = bulk_data_form.cleaned_data['bulk_data']
 
@@ -94,39 +81,54 @@ def insert_assay(request):
                 return render(request, 'templates/protein_design/insert_assay.html', {
                     'protocol_form': protocol_form,
                     'design_form': design_form,
-                    'category_form': category_form,
-                    'sp_form': sp_form,
-                    'unit_form': unit_form,
                     'bulk_data_form': bulk_data_form,
                     'error': str(e)
                 })
 
             techniques = {}
-            first_technique = None
 
-            for i, (assay_name, sequence, technique_name, result_value, result_type) in enumerate(data_lines):
+            #assay_name;sequence;technique_name;result_value;category;unit;sp;result_type
+            for (assay_name, sequence, technique_name, result_value, category_name, unit_name, sp_name, result_type, success_validation) in data_lines:
+
+                # Category
+                category, _ = Category.objects.get_or_create(category_name=category_name)
+
+                # Specific Property
+                sp, _ = SpecificProperty.objects.get_or_create(sp_name=sp_name, fk_id_category=category)
+
+                # Unit
+                unit, _ = Unit.objects.get_or_create(unit_name=unit_name)
+
+                # Relaciona Unit e Specific Property
+                UnitHasSpecificProperty.objects.get_or_create(fk_id_unit=unit, fk_id_sp=sp)
+
+                # Technique (caching pra não repetir)
                 if technique_name not in techniques:
-                    technique, _ = UsedTechnique.objects.get_or_create(technique_name=technique_name, fk_id_design=design)
+                    technique, _ = UsedTechnique.objects.get_or_create(
+                        technique_name=technique_name,
+                        fk_id_design=design
+                    )
                     techniques[technique_name] = technique
-
-                    if i == 0:
-                        first_technique = technique
                 else:
                     technique = techniques[technique_name]
 
-                assay = Assay.objects.create(
+                # Assay
+                Assay.objects.create(
                     assay_name=assay_name,
                     fk_id_protocol=protocol,
                     fk_id_category=category,
                     fk_id_design=design,
-                    fk_id_techniques=technique
+                    fk_id_techniques=technique,
+                    success_validation=True if success_validation.lower() == 'true' else False
                 )
 
+                # Sequence
                 Sequence.objects.create(
                     sequence=sequence,
                     fk_id_design=design
                 )
 
+                # Results
                 if result_type.lower() == 'computational':
                     ComputationalResult.objects.create(
                         result_value=result_value,
@@ -145,21 +147,11 @@ def insert_assay(request):
     else:
         protocol_form = ProtocolForm()
         design_form = DesignForm()
-        sequence_form = SequenceForm()
-        category_form = CategoryForm()
-        sp_form = SpecificPropertyForm()
-        unit_form = UnitForm()
-        assay_form = AssayForm()
         bulk_data_form = BulkDataForm()
 
     context = {
         'protocol_form': protocol_form,
         'design_form': design_form,
-        'sequence_form': sequence_form,
-        'category_form': category_form,
-        'sp_form': sp_form,
-        'unit_form': unit_form,
-        'assay_form': assay_form,
         'bulk_data_form': bulk_data_form,
     }
 

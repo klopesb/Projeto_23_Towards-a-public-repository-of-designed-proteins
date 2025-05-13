@@ -20,36 +20,36 @@ class SequenceForm(forms.ModelForm):
          fields = ['sequence', 'chain_id', 'length']
 
 class CategoryForm(forms.ModelForm):
-    category_name = forms.ModelChoiceField(
-        queryset=Category.objects.all(), 
-        #adicionar dropdown nos forms
-        widget=forms.Select(attrs={'class': 'form-control select2'}),
-        empty_label="Select a category", 
-        required=True
-    )
+    category_name = forms.CharField #(
+    #     queryset=Category.objects.all(), 
+    #     #adicionar dropdown nos forms
+    #     widget=forms.Select(attrs={'class': 'form-control select2'}),
+    #     empty_label="Select a category", 
+    #     required=True
+    # )
 
     class Meta:
         model = Category
         fields = ['category_name']
 
 class SpecificPropertyForm(forms.ModelForm):  #add dropdown in the form
-    sp_name = forms.ModelChoiceField(
-        queryset=SpecificProperty.objects.all(), 
-        widget=forms.Select(attrs={'class': 'form-control select2'}),
-        empty_label="Select a specific property", 
-        required=True
-    )
+    sp_name = forms.CharField #(
+        # queryset=SpecificProperty.objects.all(), 
+        # widget=forms.Select(attrs={'class': 'form-control select2'}),
+        # empty_label="Select a specific property", 
+        # required=True
+    #)
     class Meta:
         model = SpecificProperty
         fields = ['sp_name']
 
 class UnitForm(forms.ModelForm):
-    unit_name = forms.ModelChoiceField(
-        queryset=Unit.objects.all(), 
-        widget=forms.Select(attrs={'class': 'form-control select2'}),
-        empty_label="Select a unit", 
-        required=True
-    )
+    unit_name = forms.CharField #(
+        # queryset=Unit.objects.all(), 
+        # widget=forms.Select(attrs={'class': 'form-control select2'}),
+        # empty_label="Select a unit", 
+        # required=True
+    #)
     class Meta:
         model = Unit
         fields = ['unit_name']
@@ -72,13 +72,9 @@ class AssayForm(forms.ModelForm):
 AssayFormSet = modelformset_factory(
 Assay, form=AssayForm, extra=1, can_delete=True)
 
-#class ResultsForm(forms.Form):
-    #design = forms.ModelChoiceField(queryset=Design.objects.all()) #UsedTechniqueForm #forms.ModelChoiceField(queryset=Design.objects.all())
-    #technique = forms.ModelChoiceField(queryset=UsedTechnique.objects.all()) #DesignForm 
-#    csv_file = forms.FileField()
 
 class BulkDataForm(forms.Form):
-    bulk_data = forms.CharField(widget=forms.Textarea, label="Dados CSV (sequence, technique_name, result_value, result_type)")
+    bulk_data = forms.CharField(widget=forms.Textarea, label="(assay_name, sequence, technique_name, result_value, category_name, unit_name, sp_name, result_type)")
 
 
 class ResultsForm(forms.Form):

@@ -5,6 +5,8 @@
   {% tailwind_css %}
 <div class="container mt-4">
   <h1>Detalhes do Design: {{ design.design_name }}</h1>
+  <h2>Reference: {{ design.ref_link }}</h2>
+  
 
   <div class="card mt-3">
     <div class="card-body">
@@ -26,9 +28,9 @@
           <ul class="list-group mt-2">
             {% for seq in sequences %}
               <li class="list-group-item">
-                <strong>Cadeia:</strong> {{ seq.chain_id|default:"Sem identificação" }}<br>
+              <!--   <strong>Cadeia:</strong> {{ seq.chain_id|default:"Sem identificação" }}<br> -->
                 <strong>Sequência:</strong> {{ seq.sequence|default:"N/A" }}<br>
-                <strong>Tamanho:</strong> {{ seq.length|default:"N/A" }}
+                <strong>Tamanho:</strong> {{ seq.get_sequence_length|default:"N/A" }}
               </li>
             {% endfor %}
           </ul>

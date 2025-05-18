@@ -13,10 +13,6 @@ class Category(models.Model):
     class Meta:
         db_table = 'categories'
 
-
-        
-
-
 class Design(models.Model):
     id_design = models.AutoField(primary_key=True)
     design_name = models.CharField(max_length=45, null=True, blank=True) #protein name
@@ -111,6 +107,10 @@ class Sequence(models.Model):
     sequence = models.TextField(null=True, blank=True)
     length = models.CharField(max_length=45, null=True, blank=True)
 
+    def get_sequence_length(self):
+        """Retorna o comprimento da sequência, ignorando espaços e quebras de linha."""
+        return len(self.sequence.replace('\n', '').replace(' ', ''))
+
     class Meta:
         db_table = 'sequences'
         unique_together = (('id_sequences', 'fk_id_design'),)
@@ -119,7 +119,7 @@ class Sequence(models.Model):
 class SpecificProperty(models.Model):
     id_sp = models.AutoField(primary_key=True)
     fk_id_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='fk_id_category')
-    sp_name = models.CharField(max_length=45, null=True, blank=True)
+    sp_name = models.CharField(max_length=45, unique= True, null=True, blank=True)
 
     def __str__(self):
         return self.sp_name or f"Specific Property {self.id_sp}"

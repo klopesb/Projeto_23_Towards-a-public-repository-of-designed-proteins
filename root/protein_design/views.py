@@ -1,17 +1,8 @@
 from django.shortcuts import render, redirect
-from django.db import transaction
-import csv
-import pandas as pd
-from django.forms import modelformset_factory
 from .filters import AssayFilter
 from django.db.models import Prefetch
 from .validators import *
-import re
-# Create your views here.
-#from django.http import HttpResponse
-
 from .models import *
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from .forms import *
 from django.http import HttpResponse
@@ -26,9 +17,17 @@ def design_list(request):
 def design_search(request):
     assay_list = Assay.objects.all()
     assay_filter = AssayFilter(request.GET, queryset=assay_list)
-    return render(request, 'templates/protein_design/design_search.html', {'filter': assay_filter})
 
+    # Pegar os IDs únicos de design que aparecem nos ensaios filtrados
+    design_ids = assay_filter.qs.values_list('fk_id_design', flat=True).distinct()
 
+    # Buscar os designs correspondentes
+    designs = Design.objects.filter(id_design__in=design_ids)
+
+    return render(request, 'templates/protein_design/design_search.html', {
+        'filter': assay_filter,
+        'designs': designs
+    })
 #pagina de detalhes do design - /design/<int:id_design>
 
 def design_detail(request, id_design):
@@ -57,9 +56,13 @@ def design_detail(request, id_design):
         'fk_id_techniques__experimentalresult_set'
     )
 
+ # Pega as sequências relacionadas a esse design
+    sequences = Sequence.objects.filter(fk_id_design=design)
+
     return render(request, 'templates/protein_design/design_detail.html', {
         'design': design,
         'assays': assays,
+        'sequence_data': sequences
     })
 
 
@@ -119,7 +122,7 @@ def insert_assay(request):
                     fk_id_category=category,
                     fk_id_design=design,
                     fk_id_techniques=technique,
-                    success_validation=True if success_validation.lower() == 'true' else False
+                    success_validation=True if success_validation.lower() in ['true', 'yes', 'y'] else False
                 )
 
                 # Sequence

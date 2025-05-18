@@ -4,6 +4,7 @@ from django import forms
 from django.forms import modelformset_factory
 from .models import *
 
+
 class ProtocolForm(forms.ModelForm):
     class Meta:
         model = Protocol
@@ -20,36 +21,20 @@ class SequenceForm(forms.ModelForm):
          fields = ['sequence', 'chain_id', 'length']
 
 class CategoryForm(forms.ModelForm):
-    category_name = forms.CharField #(
-    #     queryset=Category.objects.all(), 
-    #     #adicionar dropdown nos forms
-    #     widget=forms.Select(attrs={'class': 'form-control select2'}),
-    #     empty_label="Select a category", 
-    #     required=True
-    # )
-
+    category_name = forms.CharField 
     class Meta:
         model = Category
         fields = ['category_name']
-
+        
+    
 class SpecificPropertyForm(forms.ModelForm):  #add dropdown in the form
-    sp_name = forms.CharField #(
-        # queryset=SpecificProperty.objects.all(), 
-        # widget=forms.Select(attrs={'class': 'form-control select2'}),
-        # empty_label="Select a specific property", 
-        # required=True
-    #)
+    sp_name = forms.CharField 
     class Meta:
         model = SpecificProperty
         fields = ['sp_name']
 
 class UnitForm(forms.ModelForm):
-    unit_name = forms.CharField #(
-        # queryset=Unit.objects.all(), 
-        # widget=forms.Select(attrs={'class': 'form-control select2'}),
-        # empty_label="Select a unit", 
-        # required=True
-    #)
+    unit_name = forms.CharField 
     class Meta:
         model = Unit
         fields = ['unit_name']
@@ -67,7 +52,7 @@ UsedTechniqueFormSet = modelformset_factory(
 class AssayForm(forms.ModelForm):
     class Meta:
         model = Assay
-        fields = ['assay_name', 'success_validation'] #assay_name is going to txt area
+        fields = ['assay_name', 'success_validation'] 
     
 AssayFormSet = modelformset_factory(
 Assay, form=AssayForm, extra=1, can_delete=True)

@@ -6,6 +6,7 @@ from .models import *
 from django.shortcuts import get_object_or_404
 from .forms import *
 from django.http import HttpResponse
+from collections import defaultdict
 
 #Página designs - /designs 
 #Fazer uma lista com as proteinas e puxar a imagem do pdb (se der certo)
@@ -26,44 +27,64 @@ def design_search(request):
 
     return render(request, 'templates/protein_design/design_search.html', {
         'filter': assay_filter,
-        'designs': designs
+        'designs': designs,
     })
 #pagina de detalhes do design - /design/<int:id_design>
 
-def design_detail(request, id_design):
-    design = get_object_or_404(Design, id_design=id_design)
 
-    # Prefetch unidades relacionadas às propriedades específicas da categoria de cada ensaio
-    unit_prefetch = Prefetch(
-        'unithasspecificproperty_set',
-        queryset=UnitHasSpecificProperty.objects.select_related('fk_id_unit')
-    )
 
-    # Prefetch propriedades específicas da categoria, já com suas unidades associadas
-    property_prefetch = Prefetch(
-        'fk_id_category__specificproperty_set',
-        queryset=SpecificProperty.objects.prefetch_related(unit_prefetch)
-    )
+def design_detail(request, design_id):
+    # Recupera o design solicitado ou retorna 404
+    design = get_object_or_404(Design, id_design=design_id)
 
-    # Ensaios relacionados ao design com otimizações de acesso
-    assays = design.assay_set.select_related(
-        'fk_id_category',
-        'fk_id_protocol',
-        'fk_id_techniques'
-    ).prefetch_related(
-        property_prefetch,
-        'fk_id_techniques__computationalresult_set',
-        'fk_id_techniques__experimentalresult_set'
-    )
-
- # Pega as sequências relacionadas a esse design
+    # Sequências associadas
     sequences = Sequence.objects.filter(fk_id_design=design)
 
-    return render(request, 'templates/protein_design/design_detail.html', {
+    # Técnicas associadas
+    techniques = UsedTechnique.objects.filter(fk_id_design=design)
+
+    # Ensaios associados
+    assays = Assay.objects.filter(fk_id_design=design)
+
+    # Resultados computacionais associados
+    computational_results = ComputationalResult.objects.filter(fk_id_design=design)
+
+    # Resultados experimentais associados
+    experimental_results = ExperimentalResult.objects.filter(fk_id_design=design)
+
+    #Units 
+    units = Unit.objects.all()
+
+    # Categories e Specific Properties agrupadas
+    categories = Category.objects.all()
+    category_data = []
+    for category in categories:
+        specific_properties = SpecificProperty.objects.filter(fk_id_category=category)
+        sp_with_units = []
+        for sp in specific_properties:
+            units = Unit.objects.filter(unithasspecificproperty__fk_id_sp=sp)
+            sp_with_units.append({
+                'property': sp,
+                'units': units
+            })
+        category_data.append({
+            'category': category,
+            'specific_properties': sp_with_units
+        })
+
+
+    context = {
         'design': design,
+        'sequences': sequences,
+        'techniques': techniques,
         'assays': assays,
-        'sequence_data': sequences
-    })
+        'computational_results': computational_results,
+        'experimental_results': experimental_results,
+        'units': units,
+        'category_data': category_data,
+    }
+
+    return render(request, 'templates/protein_design/design_detail.html', context)
 
 
 def insert_assay(request):
@@ -73,8 +94,8 @@ def insert_assay(request):
         bulk_data_form = BulkDataForm(request.POST)
 
         if protocol_form.is_valid() and design_form.is_valid() and bulk_data_form.is_valid():
-            protocol = protocol_form.save()
-            design = design_form.save()
+            protocol = protocol_form.save(commit=False)
+            design = design_form.save(commit=False)
 
             bulk_text = bulk_data_form.cleaned_data['bulk_data']
 
@@ -87,8 +108,13 @@ def insert_assay(request):
                     'bulk_data_form': bulk_data_form,
                     'error': str(e)
                 })
+            
+            # Save Protocol and Design
+            protocol.save()
+            design.save()
 
             techniques = {}
+
 
             #assay_name;sequence;technique_name;result_value;category;unit;sp;result_type
             for (assay_name, sequence, technique_name, result_value, category_name, unit_name, sp_name, result_type, success_validation) in data_lines:
@@ -160,5 +186,5 @@ def insert_assay(request):
 
     return render(request, 'templates/protein_design/insert_assay.html', context)
 
-def upload_results(request, design_id, technique_id):
-    return HttpResponse(f"Upload results para design {design_id}, técnica {technique_id}")
+# def upload_results(request, design_id, technique_id):
+#     return HttpResponse(f"Upload results para design {design_id}, técnica {technique_id}")

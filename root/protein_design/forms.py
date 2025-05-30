@@ -9,11 +9,30 @@ class ProtocolForm(forms.ModelForm):
     class Meta:
         model = Protocol
         fields = ['protocol_name']
+        labels = {
+            'protocol_name': 'Protocol Name',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['protocol_name'].required = True
 
 class DesignForm(forms.ModelForm):
     class Meta:
         model = Design
         fields = ['design_name', 'pdb_id', 'organism', 'design_type', 'ref_link']
+        labels = {
+            'design_name': 'Protein Name',
+            'pdb_id': 'PDB ID',
+            'organism': 'Organism',
+            'design_type': 'Design Type',
+            'ref_link': 'Article Link',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            self.fields[field_name].required = True
 
 class SequenceForm(forms.ModelForm):
      class Meta:
@@ -27,7 +46,7 @@ class CategoryForm(forms.ModelForm):
         fields = ['category_name']
         
     
-class SpecificPropertyForm(forms.ModelForm):  #add dropdown in the form
+class SpecificPropertyForm(forms.ModelForm):  
     sp_name = forms.CharField 
     class Meta:
         model = SpecificProperty
@@ -62,15 +81,15 @@ class BulkDataForm(forms.Form):
     bulk_data = forms.CharField(widget=forms.Textarea, label="(assay_name, sequence, technique_name, result_value, category_name, unit_name, sp_name, result_type)")
 
 
-class ResultsForm(forms.Form):
-    csv_data = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 10, 'cols': 50}),
-        label="Cole os dados do CSV aqui"
-    )
+# class ResultsForm(forms.Form):
+#     csv_data = forms.CharField(
+#         widget=forms.Textarea(attrs={'rows': 10, 'cols': 50}),
+#         label="Cole os dados do CSV aqui"
+#     )
 
-    def clean_csv_data(self):
-        data = self.cleaned_data['csv_data']
-        if not data.strip():
-            raise forms.ValidationError("Você deve colar dados CSV.")
-        return data
+#     def clean_csv_data(self):
+#         data = self.cleaned_data['csv_data']
+#         if not data.strip():
+#             raise forms.ValidationError("Você deve colar dados CSV.")
+#         return data
 

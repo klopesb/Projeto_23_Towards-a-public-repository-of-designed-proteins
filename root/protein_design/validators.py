@@ -59,7 +59,7 @@ def validate_bulk_line(line, line_number):
     try:
         float(result_value)
     except ValueError:
-        raise ValidationError(f'Line {line_number}: result value "{result_value}" must be numeric.')
+        raise ValidationError(f'Line {line_number}: result value "{result_value}" must be numeric or {result_value} is not following the correct format (e.g. 0.1).')
 
     return parts  # retorna os dados válidos
 

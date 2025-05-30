@@ -32,7 +32,6 @@ class Design(models.Model):
     class Meta:
         db_table = 'design'
 
-
 class Protocol(models.Model):
     id_protocol = models.AutoField(primary_key=True)
     protocol_name = models.CharField(max_length=45, null=True, blank=True)
@@ -62,44 +61,6 @@ class UsedTechnique(models.Model):
         unique_together = (('id_techniques', 'fk_id_design'),)
 
 
-class Assay(models.Model):
-    id_assays = models.AutoField(primary_key=True)
-    fk_id_protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE, db_column= 'fk_id_protocol' )
-    fk_id_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='fk_id_category')
-    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')	
-    fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
-    assay_name = models.CharField(max_length=45, null=True, blank=True)
-    success_validation = models.BooleanField(null=True, blank=True)
-
-    class Meta:
-        db_table = 'assays'
-        unique_together = (('id_assays', 'fk_id_protocol', 'fk_id_category', 'fk_id_design', 'fk_id_techniques'),)
-
-
-class ComputationalResult(models.Model):
-    id_computational_results = models.AutoField(primary_key=True)
-    fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
-    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
-    result_file = models.BinaryField(null=True, blank=True)
-    result_value = models.FloatField(null=True, blank=True) 
-
-    class Meta:
-        db_table = 'computational_results'
-        unique_together = (('id_computational_results', 'fk_id_techniques', 'fk_id_design'),)
-
-
-class ExperimentalResult(models.Model):
-    id_experimental_results = models.AutoField(primary_key=True)
-    fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
-    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
-    result_file = models.BinaryField(null=True, blank=True)
-    result_value = models.FloatField(null=True, blank=True) 
-
-    class Meta:
-        db_table = 'experimental_results'
-        unique_together = (('id_experimental_results', 'fk_id_techniques', 'fk_id_design'),)
-
-
 class Sequence(models.Model):
     id_sequences = models.AutoField(primary_key=True)
     fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
@@ -115,11 +76,47 @@ class Sequence(models.Model):
         db_table = 'sequences'
         unique_together = (('id_sequences', 'fk_id_design'),)
 
+class Assay(models.Model):
+    id_assays = models.AutoField(primary_key=True)
+    fk_id_protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE, db_column= 'fk_id_protocol' )
+    fk_id_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='fk_id_category')
+    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')	
+    fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
+    assay_name = models.CharField(max_length=45, null=True, blank=True)
+    success_validation = models.BooleanField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'assays'
+        unique_together = (('id_assays', 'fk_id_protocol', 'fk_id_category', 'fk_id_design', 'fk_id_techniques'),)
+
+class ComputationalResult(models.Model):
+    id_computational_results = models.AutoField(primary_key=True)
+    fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
+    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
+    fk_id_sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE, db_column='fk_id_sequence', null=True, blank=True)
+    result_value = models.FloatField(null=True, blank=True)
+    
+    class Meta:
+        db_table = 'computational_results'
+        unique_together = (('id_computational_results', 'fk_id_techniques', 'fk_id_design', 'fk_id_sequence'),)
+
+class ExperimentalResult(models.Model):
+    id_experimental_results = models.AutoField(primary_key=True)
+    fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
+    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
+    fk_id_sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE, db_column='fk_id_sequence', null=True, blank=True)
+    result_file = models.BinaryField(null=True, blank=True)
+    result_value = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'experimental_results'
+        unique_together = (('id_experimental_results', 'fk_id_techniques', 'fk_id_design', 'fk_id_sequence'),)
+
 
 class SpecificProperty(models.Model):
     id_sp = models.AutoField(primary_key=True)
     fk_id_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='fk_id_category')
-    sp_name = models.CharField(max_length=45, unique= True, null=True, blank=True)
+    sp_name = models.CharField(max_length=45, null=True, blank=True)
 
     def __str__(self):
         return self.sp_name or f"Specific Property {self.id_sp}"

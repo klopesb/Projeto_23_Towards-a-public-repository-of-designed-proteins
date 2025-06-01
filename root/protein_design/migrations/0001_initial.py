@@ -84,18 +84,18 @@ class Migration(migrations.Migration):
                 'unique_together': {('id_techniques', 'fk_id_design')},
             },
         ),
-        migrations.CreateModel(
-            name='SpecificProperty',
-            fields=[
-                ('id_sp', models.AutoField(primary_key=True, serialize=False)),
-                ('sp_name', models.CharField(blank=True, max_length=45, null=True)),
-                ('fk_id_category', models.ForeignKey(db_column='fk_id_category', on_delete=django.db.models.deletion.CASCADE, to='protein_design.category')),
-            ],
-            options={
-                'db_table': 'specific_property',
-                'unique_together': {('id_sp', 'fk_id_category')},
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='SpecificProperty',
+        #     fields=[
+        #         ('id_sp', models.AutoField(primary_key=True, serialize=False)),
+        #         ('sp_name', models.CharField(blank=True, max_length=45, null=True)),
+        #         ('fk_id_category', models.ForeignKey(db_column='fk_id_category', on_delete=django.db.models.deletion.CASCADE, to='protein_design.category')),
+        #     ],
+        #     options={
+        #         'db_table': 'specific_property',
+        #         'unique_together': {('id_sp', 'fk_id_category')},
+        #     },
+        # ),
         migrations.CreateModel(
             name='ExperimentalResult',
             fields=[
@@ -141,15 +141,15 @@ class Migration(migrations.Migration):
                 'unique_together': {('id_assays', 'fk_id_protocol', 'fk_id_category', 'fk_id_design', 'fk_id_techniques')},
             },
         ),
-        migrations.CreateModel(
-            name='UnitHasSpecificProperty',
-            fields=[
-                ('fk_id_unit', models.ForeignKey(db_column='fk_id_unit', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='protein_design.unit')),
-                ('fk_id_sp', models.ForeignKey(db_column='fk_id_sp', on_delete=django.db.models.deletion.CASCADE, to='protein_design.specificproperty')),
-            ],
-            options={
-                'db_table': 'unit_has_specific_property',
-                'unique_together': {('fk_id_unit', 'fk_id_sp')},
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='UnitHasSpecificProperty',
+        #     fields=[
+        #         ('fk_id_unit', models.ForeignKey(db_column='fk_id_unit', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='protein_design.unit')),
+        #         ('fk_id_sp', models.ForeignKey(db_column='fk_id_sp', on_delete=django.db.models.deletion.CASCADE, to='protein_design.specificproperty')),
+        #     ],
+        #     options={
+        #         'db_table': 'unit_has_specific_property',
+        #         'unique_together': {('fk_id_unit', 'fk_id_sp')},
+        #     },
+        # ),
     ]

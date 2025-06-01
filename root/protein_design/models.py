@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-
 class Category(models.Model):
     id_category = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=45, null=True, blank=True)
@@ -94,7 +93,7 @@ class ComputationalResult(models.Model):
     fk_id_techniques = models.ForeignKey(UsedTechnique, on_delete=models.CASCADE, db_column='fk_id_techniques')
     fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
     fk_id_sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE, db_column='fk_id_sequence', null=True, blank=True)
-    result_value = models.FloatField(null=True, blank=True)
+    result_value = models.CharField(max_length=255, null=True, blank=True)
     
     class Meta:
         db_table = 'computational_results'
@@ -106,7 +105,7 @@ class ExperimentalResult(models.Model):
     fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
     fk_id_sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE, db_column='fk_id_sequence', null=True, blank=True)
     result_file = models.BinaryField(null=True, blank=True)
-    result_value = models.FloatField(null=True, blank=True)
+    result_value = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = 'experimental_results'
@@ -136,7 +135,14 @@ class Unit(models.Model):
     class Meta:
         db_table = 'unit'
 
+class DesignHasSpecificProperty(models.Model):
+    fk_id_design = models.ForeignKey(Design, on_delete=models.CASCADE, db_column='fk_id_design')
+    fk_id_sp = models.ForeignKey(SpecificProperty, on_delete=models.CASCADE, db_column='fk_id_sp')
 
+    class Meta:
+        db_table = 'design_has_specific_property'
+        unique_together = (('fk_id_design', 'fk_id_sp'),)
+        
 class UnitHasSpecificProperty(models.Model):
     fk_id_unit = models.ForeignKey(Unit, on_delete=models.CASCADE, db_column='fk_id_unit', primary_key=True)
     fk_id_sp = models.ForeignKey(SpecificProperty, on_delete=models.CASCADE, db_column='fk_id_sp')
@@ -144,3 +150,4 @@ class UnitHasSpecificProperty(models.Model):
     class Meta:
         db_table = 'unit_has_specific_property'
         unique_together = (('fk_id_unit', 'fk_id_sp'),)  
+

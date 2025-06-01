@@ -19,18 +19,20 @@ def design_search(request):
     assay_list = Assay.objects.all()
     assay_filter = AssayFilter(request.GET, queryset=assay_list)
 
+    filtered_assays = assay_filter.qs.distinct() 
+
     # Pegar os IDs únicos de design que aparecem nos ensaios filtrados
-    design_ids = assay_filter.qs.values_list('fk_id_design', flat=True).distinct()
+    design_ids = assay_filter.qs.filter(fk_id_design__isnull=False).values_list('fk_id_design', flat=True).distinct()
 
     # Buscar os designs correspondentes
     designs = Design.objects.filter(id_design__in=design_ids)
 
     return render(request, 'templates/protein_design/design_search.html', {
         'filter': assay_filter,
+        'filtered_assays': filtered_assays, 
         'designs': designs,
     })
 #pagina de detalhes do design - /design/<int:id_design>
-
 
 
 def design_detail(request, design_id):
@@ -44,7 +46,7 @@ def design_detail(request, design_id):
     techniques = UsedTechnique.objects.filter(fk_id_design=design)
 
     # Ensaios associados
-    assays = Assay.objects.filter(fk_id_design=design)
+    assays = Assay.objects.filter(fk_id_design=design).select_related('fk_id_category')
 
     # Resultados computacionais associados
     computational_results = ComputationalResult.objects.filter(fk_id_design=design)
@@ -52,26 +54,34 @@ def design_detail(request, design_id):
     # Resultados experimentais associados
     experimental_results = ExperimentalResult.objects.filter(fk_id_design=design)
 
-    #Units 
+    # Units
     units = Unit.objects.all()
 
-    # Categories e Specific Properties agrupadas
-    categories = Category.objects.all()
+    # Categorias para os assays do design
+    # (para evitar categorias sem assays, filtramos apenas categorias presentes nos assays)
+    categories_ids_in_assays = assays.values_list('fk_id_category__id_category', flat=True).distinct()
+    categories = Category.objects.filter(id_category__in=categories_ids_in_assays)
+
+    # Somente as propriedades específicas ligadas ao design via tabela intermediária
+    specific_properties = SpecificProperty.objects.filter(
+        designhasspecificproperty__fk_id_design=design
+    ).select_related('fk_id_category')
+
+    # Agrupando propriedades específicas por categoria, e unidades relacionadas a cada propriedade
     category_data = []
     for category in categories:
-        specific_properties = SpecificProperty.objects.filter(fk_id_category=category)
+        sp_for_category = [sp for sp in specific_properties if sp.fk_id_category == category]
         sp_with_units = []
-        for sp in specific_properties:
-            units = Unit.objects.filter(unithasspecificproperty__fk_id_sp=sp)
+        for sp in sp_for_category:
+            sp_units = Unit.objects.filter(unithasspecificproperty__fk_id_sp=sp)
             sp_with_units.append({
                 'property': sp,
-                'units': units
+                'units': sp_units,
             })
         category_data.append({
             'category': category,
-            'specific_properties': sp_with_units
+            'specific_properties': sp_with_units,
         })
-
 
     context = {
         'design': design,
@@ -129,7 +139,10 @@ def insert_assay(request):
                 unit, _ = Unit.objects.get_or_create(unit_name=unit_name)
 
                 # Relaciona Unit e Specific Property
-                UnitHasSpecificProperty.objects.get_or_create(fk_id_unit=unit, fk_id_sp=sp)
+                #UnitHasSpecificProperty.objects.get_or_create(fk_id_unit=unit, fk_id_sp=sp)
+
+                # Relaciona Specific Property e Design
+                DesignHasSpecificProperty.objects.get_or_create(fk_id_design=design, fk_id_sp=sp)
 
                 # Technique (caching pra não repetir)
                 if technique_name not in techniques:
@@ -152,7 +165,7 @@ def insert_assay(request):
                 )
 
                 # Sequence
-                Sequence.objects.create(
+                seq_obj = Sequence.objects.create(
                     sequence=sequence,
                     fk_id_design=design
                 )
@@ -162,13 +175,15 @@ def insert_assay(request):
                     ComputationalResult.objects.create(
                         result_value=result_value,
                         fk_id_design=design,
-                        fk_id_techniques=technique
+                        fk_id_techniques=technique,
+                        fk_id_sequence=seq_obj
                     )
                 elif result_type.lower() == 'experimental':
                     ExperimentalResult.objects.create(
                         result_value=result_value,
                         fk_id_design=design,
-                        fk_id_techniques=technique
+                        fk_id_techniques=technique,
+                        fk_id_sequence=seq_obj
                     )
 
             return redirect('design_list')
@@ -185,6 +200,7 @@ def insert_assay(request):
     }
 
     return render(request, 'templates/protein_design/insert_assay.html', context)
+
 
 # def upload_results(request, design_id, technique_id):
 #     return HttpResponse(f"Upload results para design {design_id}, técnica {technique_id}")

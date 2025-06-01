@@ -56,10 +56,10 @@ def validate_bulk_line(line, line_number):
     if result_type.lower() not in ['computational', 'experimental']:
         raise ValidationError(f'Line {line_number}: Invalid result type "{result_type}". Expected: computational or experimental.')
 
-    try:
-        float(result_value)
-    except ValueError:
-        raise ValidationError(f'Line {line_number}: result value "{result_value}" must be numeric or {result_value} is not following the correct format (e.g. 0.1).')
+    # try:
+    #     float(result_value)
+    # except ValueError:
+    #     raise ValidationError(f'Line {line_number}: result value "{result_value}" must be numeric or {result_value} is not following the correct format (e.g. 0.1).')
 
     return parts  # retorna os dados válidos
 

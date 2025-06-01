@@ -17,7 +17,7 @@ class AssayFilter(django_filters.FilterSet):
     global_search = django_filters.CharFilter(method='filter_global', label='Busca geral')
 
     sp = django_filters.ModelChoiceFilter(
-        field_name='fk_id_category__specificproperty',
+        field_name='fk_id_design__designhasspecificproperty__fk_id_sp',
         queryset=SpecificProperty.objects.all(),
         label='Specific Property',
         empty_label='No selection',
@@ -35,11 +35,13 @@ class AssayFilter(django_filters.FilterSet):
     widget=SelectWithDisabledFirstOption()
     )
 
-    fk_id_techniques = django_filters.ModelChoiceFilter(
-        queryset=UsedTechnique.objects.all(),
+    technique_name_choices = [(t, t) for t in UsedTechnique.objects.values_list('technique_name', flat=True).distinct()]
+
+    technique_name = django_filters.ChoiceFilter(
         label='Technique',
-        empty_label='No selection',
-        widget = SelectWithDisabledFirstOption()
+        choices=technique_name_choices,
+        method='filter_by_technique_name',
+        widget=SelectWithDisabledFirstOption()
     )
 
     design_type = django_filters.ChoiceFilter(
@@ -81,3 +83,7 @@ class AssayFilter(django_filters.FilterSet):
             Q(fk_id_design__organism__icontains=value) |
             Q(fk_id_design__design_type__icontains=value)
         )
+    
+    def filter_by_technique_name(self, queryset, name, value):
+        techniques = UsedTechnique.objects.filter(technique_name=value)
+        return queryset.filter(fk_id_techniques__in=techniques)

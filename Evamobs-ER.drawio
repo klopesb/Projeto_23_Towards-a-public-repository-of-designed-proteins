@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Página-1" id="L5ma5zG3jcYohzuk8ckf">
-    <mxGraphModel dx="983" dy="1268" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3960" dy="2537" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -6870,6 +6870,66 @@
             <mxPoint x="1120" y="4150" as="sourcePoint" />
             <mxPoint x="1220" y="4050" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1667" parent="1" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="190.27" width="281.5" x="2651" y="3058" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1668" parent="1" style="shape=mxgraph.networks2.icon;aspect=fixed;fillColor=#FFFFFF;strokeColor=#000000;gradientColor=#000000;network2IconShadow=1;network2bgFillColor=none;labelPosition=center;verticalLabelPosition=bottom;align=center;verticalAlign=top;network2Icon=mxgraph.networks2.laptop;network2IconW=1;network2IconH=0.5734;" value="" vertex="1">
+          <mxGeometry height="147.36" width="257" x="2181.39" y="3088.64" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1669" parent="1" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://icons.diagrams.net/icon-cache1/Material_Core-2642/settings-1197.svg" value="" vertex="1">
+          <mxGeometry height="160" width="160" x="3162.5" y="3076" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1678" parent="1" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="60" width="180" x="2450.5" y="3101" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1680" parent="1" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;rotation=-180;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="60" width="180" x="2450.5" y="3161.27" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1682" parent="1" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="54.73" width="164" x="2945.5" y="3106.73" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1683" parent="1" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;rotation=-180;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="54.73" width="170" x="2945.5" y="3162" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1684" parent="1" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="54.73" width="177" x="3364.5" y="3117" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1685" parent="1" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0.6;dx=40;notch=0;rotation=-180;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="60" width="180" x="3355.5" y="3162" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1687" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 30px;&quot;&gt;Internet&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="2736.75" y="3267" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1690" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 30px;&quot;&gt;API&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="3187.5" y="3268" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1693" parent="1" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#000000;shape=mxgraph.mscae.enterprise.database_server" value="" vertex="1">
+          <mxGeometry height="182.89" width="139" x="3610" y="3058" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1695" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;font face=&quot;News Gothic&quot;&gt;&lt;span style=&quot;font-size: 30px;&quot;&gt;Server + Database&lt;/span&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="227" x="3566" y="3267" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1697" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontStyle=1" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 30px;&quot;&gt;Web app on browser&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="150" x="2234.89" y="3268" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1698" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;Response&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="2520.5" y="3207" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1700" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;Request&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="2450.5" y="3076.73" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1703" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;Request&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="2945.5" y="3088.64" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1704" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;Response&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="3010" y="3206" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1705" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div&gt;&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;API&lt;/i&gt;&lt;/font&gt;&lt;/div&gt;&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;Response&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="110" x="3431.5" y="3222" as="geometry" />
+        </mxCell>
+        <mxCell id="0XAswhB_rfyhe08Qetge-1706" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;API&amp;nbsp;&lt;/i&gt;&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;News Gothic&quot; style=&quot;font-size: 25px;&quot;&gt;&lt;i style=&quot;&quot;&gt;Request&lt;/i&gt;&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="196.36" x="3322.5" y="3087" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
